@@ -16,7 +16,7 @@ import { uniqueArray } from "../Utils/uniqueArray";
 import { NeverType } from "../Type/NeverType";
 
 export class ObjectTypeFormatter implements SubTypeFormatter {
-    public constructor(protected childTypeFormatter: TypeFormatter) {}
+    public constructor(protected childTypeFormatter: TypeFormatter) { }
 
     public supportsType(type: ObjectType): boolean {
         return type instanceof ObjectType;

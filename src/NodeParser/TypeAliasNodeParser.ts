@@ -11,7 +11,7 @@ export class TypeAliasNodeParser implements SubNodeParser {
     public constructor(
         protected typeChecker: ts.TypeChecker,
         protected childNodeParser: NodeParser
-    ) {}
+    ) { }
 
     public supportsNode(node: ts.TypeAliasDeclaration): boolean {
         return node.kind === ts.SyntaxKind.TypeAliasDeclaration;
@@ -41,7 +41,7 @@ export class TypeAliasNodeParser implements SubNodeParser {
         if (type instanceof NeverType) {
             return new NeverType();
         }
-        return new AliasType(id, type);
+        return new AliasType(id, type, node.getSourceFile().fileName);
     }
 
     protected getTypeId(node: ts.TypeAliasDeclaration, context: Context): string {

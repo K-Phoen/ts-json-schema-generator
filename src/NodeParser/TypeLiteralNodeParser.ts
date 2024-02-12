@@ -14,7 +14,7 @@ export class TypeLiteralNodeParser implements SubNodeParser {
         protected typeChecker: ts.TypeChecker,
         protected childNodeParser: NodeParser,
         protected readonly additionalProperties: boolean
-    ) {}
+    ) { }
 
     public supportsNode(node: ts.TypeLiteralNode): boolean {
         return node.kind === ts.SyntaxKind.TypeLiteral;
@@ -32,7 +32,7 @@ export class TypeLiteralNodeParser implements SubNodeParser {
             return new NeverType();
         }
 
-        return new ObjectType(id, [], properties, this.getAdditionalProperties(node, context));
+        return new ObjectType(id, [], properties, this.getAdditionalProperties(node, context), node.getSourceFile().fileName);
     }
 
     protected getProperties(node: ts.TypeLiteralNode, context: Context): ObjectProperty[] | undefined {

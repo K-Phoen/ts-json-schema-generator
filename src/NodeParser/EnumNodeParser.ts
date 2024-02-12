@@ -7,7 +7,7 @@ import { isNodeHidden } from "../Utils/isHidden";
 import { getKey } from "../Utils/nodeKey";
 
 export class EnumNodeParser implements SubNodeParser {
-    public constructor(protected typeChecker: ts.TypeChecker) {}
+    public constructor(protected typeChecker: ts.TypeChecker) { }
 
     public supportsNode(node: ts.EnumDeclaration | ts.EnumMember): boolean {
         return node.kind === ts.SyntaxKind.EnumDeclaration || node.kind === ts.SyntaxKind.EnumMember;
@@ -19,7 +19,8 @@ export class EnumNodeParser implements SubNodeParser {
             `enum-${getKey(node, context)}`,
             members
                 .filter((member: ts.EnumMember) => !isNodeHidden(member))
-                .map((member, index) => this.getMemberValue(member, index))
+                .map((member, index) => this.getMemberValue(member, index)),
+            node.getSourceFile().fileName,
         );
     }
 

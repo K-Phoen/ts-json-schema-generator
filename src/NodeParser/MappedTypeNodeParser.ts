@@ -23,7 +23,7 @@ export class MappedTypeNodeParser implements SubNodeParser {
     public constructor(
         protected childNodeParser: NodeParser,
         protected readonly additionalProperties: boolean
-    ) {}
+    ) { }
 
     public supportsNode(node: ts.MappedTypeNode): boolean {
         return node.kind === ts.SyntaxKind.MappedType;
@@ -33,6 +33,7 @@ export class MappedTypeNodeParser implements SubNodeParser {
         const constraintType = this.childNodeParser.createType(node.typeParameter.constraint!, context);
         const keyListType = derefType(constraintType);
         const id = `indexed-type-${getKey(node, context)}`;
+        const srcFileName = node.getSourceFile().fileName;
 
         if (keyListType instanceof UnionType) {
             // Key type resolves to a set of known properties
@@ -40,11 +41,12 @@ export class MappedTypeNodeParser implements SubNodeParser {
                 id,
                 [],
                 this.getProperties(node, keyListType, context),
-                this.getAdditionalProperties(node, keyListType, context)
+                this.getAdditionalProperties(node, keyListType, context),
+                node.getSourceFile().fileName
             );
         } else if (keyListType instanceof LiteralType) {
             // Key type resolves to single known property
-            return new ObjectType(id, [], this.getProperties(node, new UnionType([keyListType]), context), false);
+            return new ObjectType(id, [], this.getProperties(node, new UnionType([keyListType]), context), false, srcFileName);
         } else if (
             keyListType instanceof StringType ||
             keyListType instanceof NumberType ||
@@ -60,7 +62,7 @@ export class MappedTypeNodeParser implements SubNodeParser {
             // Key type widens to `string`
             const type = this.childNodeParser.createType(node.type!, context);
             // const resultType = type instanceof NeverType ? new NeverType() : new ObjectType(id, [], [], type);
-            const resultType = new ObjectType(id, [], [], type);
+            const resultType = new ObjectType(id, [], [], type, srcFileName);
             if (resultType) {
                 let annotations;
 
@@ -78,15 +80,13 @@ export class MappedTypeNodeParser implements SubNodeParser {
             }
             return resultType;
         } else if (keyListType instanceof EnumType) {
-            return new ObjectType(id, [], this.getValues(node, keyListType, context), false);
+            return new ObjectType(id, [], this.getValues(node, keyListType, context), false, srcFileName);
         } else if (keyListType instanceof NeverType) {
-            return new ObjectType(id, [], [], false);
+            return new ObjectType(id, [], [], false, srcFileName);
         } else {
             throw new LogicError(
                 // eslint-disable-next-line max-len
-                `Unexpected key type "${
-                    constraintType ? constraintType.getId() : constraintType
-                }" for type "${node.getText()}" (expected "UnionType" or "StringType")`
+                `Unexpected key type "${constraintType ? constraintType.getId() : constraintType}" for type "${node.getText()}" (expected "UnionType" or "StringType")`
             );
         }
     }

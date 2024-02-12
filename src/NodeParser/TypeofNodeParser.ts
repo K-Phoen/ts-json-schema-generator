@@ -13,7 +13,7 @@ export class TypeofNodeParser implements SubNodeParser {
     public constructor(
         protected typeChecker: ts.TypeChecker,
         protected childNodeParser: NodeParser
-    ) {}
+    ) { }
 
     public supportsNode(node: ts.TypeQueryNode): boolean {
         return node.kind === ts.SyntaxKind.TypeQuery;
@@ -47,9 +47,7 @@ export class TypeofNodeParser implements SubNodeParser {
             // Silently ignoring Function as JSON Schema does not define them
             // see https://github.com/vega/ts-json-schema-generator/issues/98
             return new UnknownType(
-                `(${(<ts.FunctionDeclaration>valueDec).parameters.map((p) => p.getFullText()).join(",")}) -> ${(<
-                    ts.FunctionDeclaration
-                >valueDec).type?.getFullText()}`
+                `(${(<ts.FunctionDeclaration>valueDec).parameters.map((p) => p.getFullText()).join(",")}) -> ${(<ts.FunctionDeclaration>valueDec).type?.getFullText()}`
             );
         }
 
@@ -78,6 +76,6 @@ export class TypeofNodeParser implements SubNodeParser {
             return new ObjectProperty(name, type, true);
         });
 
-        return new ObjectType(id, [], properties, false);
+        return new ObjectType(id, [], properties, false, node.getSourceFile().fileName);
     }
 }

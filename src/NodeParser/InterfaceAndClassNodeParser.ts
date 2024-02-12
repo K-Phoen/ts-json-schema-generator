@@ -15,7 +15,7 @@ export class InterfaceAndClassNodeParser implements SubNodeParser {
         protected typeChecker: ts.TypeChecker,
         protected childNodeParser: NodeParser,
         protected readonly additionalProperties: boolean
-    ) {}
+    ) { }
 
     public supportsNode(node: ts.InterfaceDeclaration | ts.ClassDeclaration): boolean {
         return node.kind === ts.SyntaxKind.InterfaceDeclaration || node.kind === ts.SyntaxKind.ClassDeclaration;
@@ -60,7 +60,7 @@ export class InterfaceAndClassNodeParser implements SubNodeParser {
             }
         }
 
-        return new ObjectType(id, this.getBaseTypes(node, context), properties, additionalProperties);
+        return new ObjectType(id, this.getBaseTypes(node, context), properties, additionalProperties, node.getSourceFile().fileName);
     }
 
     /**

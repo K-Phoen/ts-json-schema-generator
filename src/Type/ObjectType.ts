@@ -6,7 +6,7 @@ export class ObjectProperty {
         private name: string,
         private type: BaseType,
         private required: boolean
-    ) {}
+    ) { }
 
     public getName(): string {
         return strip(this.name);
@@ -25,10 +25,11 @@ export class ObjectType extends BaseType {
         private baseTypes: readonly BaseType[],
         private properties: readonly ObjectProperty[],
         private additionalProperties: BaseType | boolean,
+        srcFileName: string,
         // whether the object is `object`
         private nonPrimitive: boolean = false
     ) {
-        super();
+        super(srcFileName);
     }
 
     public getId(): string {
