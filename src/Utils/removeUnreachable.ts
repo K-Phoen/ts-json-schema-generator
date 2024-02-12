@@ -1,15 +1,14 @@
 import { JSONSchema7Definition } from "json-schema";
 import { Definition } from "../Schema/Definition";
 import { StringMap } from "./StringMap";
-
-const DEFINITION_OFFSET = "#/definitions/".length;
+import { DEFINITION_OFFSET } from "./constants";
 
 function addReachable(
     definition: Definition | JSONSchema7Definition,
     definitions: StringMap<Definition>,
     reachable: Set<string>
 ) {
-    if (typeof definition === "boolean") {
+    if (!definition || typeof definition === "boolean") {
         return;
     }
 
