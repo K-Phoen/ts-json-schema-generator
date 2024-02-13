@@ -25,7 +25,7 @@ export class ObjectType extends BaseType {
         private baseTypes: readonly BaseType[],
         private properties: readonly ObjectProperty[],
         private additionalProperties: BaseType | boolean,
-        srcFileName: string,
+        srcFileName?: string,
         // whether the object is `object`
         private nonPrimitive: boolean = false
     ) {

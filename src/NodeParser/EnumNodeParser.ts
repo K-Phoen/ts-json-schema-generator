@@ -5,6 +5,7 @@ import { BaseType } from "../Type/BaseType";
 import { EnumType, EnumValue } from "../Type/EnumType";
 import { isNodeHidden } from "../Utils/isHidden";
 import { getKey } from "../Utils/nodeKey";
+import { nodeFilename } from "../Utils/nodeFilename";
 
 export class EnumNodeParser implements SubNodeParser {
     public constructor(protected typeChecker: ts.TypeChecker) { }
@@ -20,7 +21,7 @@ export class EnumNodeParser implements SubNodeParser {
             members
                 .filter((member: ts.EnumMember) => !isNodeHidden(member))
                 .map((member, index) => this.getMemberValue(member, index)),
-            node.getSourceFile().fileName,
+            nodeFilename(node),
         );
     }
 

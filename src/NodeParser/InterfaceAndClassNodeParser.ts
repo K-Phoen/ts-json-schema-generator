@@ -9,6 +9,7 @@ import { ReferenceType } from "../Type/ReferenceType";
 import { isNodeHidden } from "../Utils/isHidden";
 import { isPublic, isStatic } from "../Utils/modifiers";
 import { getKey } from "../Utils/nodeKey";
+import { nodeFilename } from "../Utils/nodeFilename";
 
 export class InterfaceAndClassNodeParser implements SubNodeParser {
     public constructor(
@@ -60,7 +61,7 @@ export class InterfaceAndClassNodeParser implements SubNodeParser {
             }
         }
 
-        return new ObjectType(id, this.getBaseTypes(node, context), properties, additionalProperties, node.getSourceFile().fileName);
+        return new ObjectType(id, this.getBaseTypes(node, context), properties, additionalProperties, nodeFilename(node));
     }
 
     /**

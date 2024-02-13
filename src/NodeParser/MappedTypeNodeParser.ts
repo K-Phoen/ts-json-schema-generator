@@ -18,6 +18,7 @@ import { derefAnnotatedType, derefType } from "../Utils/derefType";
 import { getKey } from "../Utils/nodeKey";
 import { preserveAnnotation } from "../Utils/preserveAnnotation";
 import { removeUndefined } from "../Utils/removeUndefined";
+import { nodeFilename } from "../Utils/nodeFilename";
 
 export class MappedTypeNodeParser implements SubNodeParser {
     public constructor(
@@ -33,7 +34,7 @@ export class MappedTypeNodeParser implements SubNodeParser {
         const constraintType = this.childNodeParser.createType(node.typeParameter.constraint!, context);
         const keyListType = derefType(constraintType);
         const id = `indexed-type-${getKey(node, context)}`;
-        const srcFileName = node.getSourceFile().fileName;
+        const srcFileName = nodeFilename(node);
 
         if (keyListType instanceof UnionType) {
             // Key type resolves to a set of known properties
@@ -42,7 +43,7 @@ export class MappedTypeNodeParser implements SubNodeParser {
                 [],
                 this.getProperties(node, keyListType, context),
                 this.getAdditionalProperties(node, keyListType, context),
-                node.getSourceFile().fileName
+                srcFileName
             );
         } else if (keyListType instanceof LiteralType) {
             // Key type resolves to single known property

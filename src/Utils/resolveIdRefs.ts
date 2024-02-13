@@ -1,6 +1,7 @@
 import { JSONSchema7Definition } from "json-schema";
 import { StringMap } from "./StringMap";
 import { DEFINITION_OFFSET } from "./constants";
+import { isLocalRef } from "./isLocalRef";
 
 /**
  * Resolve all `#/definitions/...` and `$ref` in schema with appropriate disambiguated names
@@ -16,10 +17,14 @@ export function resolveIdRefs(
     const { $ref, allOf, oneOf, anyOf, not, properties, items, definitions, additionalProperties, ...rest } = schema;
     const result: JSONSchema7Definition = { ...rest };
     if ($ref) {
-        // THE Money Shot.
-        const id = encodeRefs ? decodeURIComponent($ref.slice(DEFINITION_OFFSET)) : $ref.slice(DEFINITION_OFFSET);
-        const name = idNameMap.get(id);
-        result.$ref = `#/definitions/${encodeRefs ? encodeURIComponent(name!) : name}`;
+        if (!isLocalRef($ref)) {
+            result.$ref = $ref;
+        } else {
+            // THE Money Shot.
+            const id = encodeRefs ? decodeURIComponent($ref.slice(DEFINITION_OFFSET)) : $ref.slice(DEFINITION_OFFSET);
+            const name = idNameMap.get(id);
+            result.$ref = `#/definitions/${encodeRefs ? encodeURIComponent(name!) : name}`;
+        }
     }
     if (definitions) {
         result.definitions = Object.entries(definitions).reduce((acc, [prop, value]) => {
@@ -50,6 +55,15 @@ export function resolveIdRefs(
     }
     if (oneOf) {
         result.oneOf = oneOf.map((el) => resolveIdRefs(el, idNameMap, encodeRefs));
+    }
+    if (schema.if) {
+        result.if = resolveIdRefs(schema.if, idNameMap, encodeRefs);
+    }
+    if (schema.then) {
+        result.then = resolveIdRefs(schema.then, idNameMap, encodeRefs);
+    }
+    if (schema.else) {
+        result.else = resolveIdRefs(schema.else, idNameMap, encodeRefs);
     }
     if (not) {
         result.not = resolveIdRefs(not, idNameMap, encodeRefs);

@@ -2,6 +2,7 @@ import { JSONSchema7Definition } from "json-schema";
 import { Definition } from "../Schema/Definition";
 import { StringMap } from "./StringMap";
 import { DEFINITION_OFFSET } from "./constants";
+import { isLocalRef } from "./isLocalRef";
 
 function addReachable(
     definition: Definition | JSONSchema7Definition,
@@ -81,8 +82,4 @@ export function removeUnreachable(
     }
 
     return out;
-}
-
-function isLocalRef(ref: string) {
-    return ref.charAt(0) === "#";
 }

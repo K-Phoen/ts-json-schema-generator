@@ -32,20 +32,26 @@ export function unambiguousName(child: DefinitionType, isRoot: boolean, peers: D
         return child.getName();
     }
 
-    // filter unique peers to be those that have srcFileNames.
-    // Intermediate Types - AnnotationTypes, UnionTypes, do not have sourceFileNames
-    const uniques = peers.filter(peer => peer.getType().getSrcFileName());
-    if (uniques.length === 1) {
-        return uniques[0].getName();
+    // filter peers to keep only those who have file names.
+    // Intermediate Types - AnnotationTypes, UnionTypes, do not have file names
+    const sourcedPeers = peers.filter(peer => peer.getType().getSrcFileName());
+    if (sourcedPeers.length === 1) {
+        return sourcedPeers[0].getName();
     }
 
     let pathIndex = -1;
-    const srcPaths = uniques.map((peer, count) => {
+    const srcPaths = sourcedPeers.map((peer, count) => {
         pathIndex = child === peer ? count : pathIndex;
         return peer.getType().getSrcFileName()!;
     });
 
     const commonPrefixLength = longestCommonPrefix(srcPaths).length;
+
+    // the definition and its peers actually seem to refer to the same thing
+    if (commonPrefixLength == srcPaths[pathIndex].length) {
+        return child.getName();
+    }
+
     const uniquePath = srcPaths[pathIndex]
         .substring(commonPrefixLength) // remove the common prefix
         .replace(/\//g, "__")          // replace "/" by double underscores

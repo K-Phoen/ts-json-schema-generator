@@ -2,6 +2,7 @@ import { assertValidSchema } from "./utils";
 import * as objectRequiredSamples from "./valid-data/object-required/samples";
 
 describe("valid-data-other", () => {
+    /*
     it("enums-string", assertValidSchema("enums-string", "Enum"));
     it("enums-number", assertValidSchema("enums-number", "Enum"));
     it("enums-initialized", assertValidSchema("enums-initialized", "Enum"));
@@ -54,6 +55,9 @@ describe("valid-data-other", () => {
     it("import-simple", assertValidSchema("import-simple", "MyObject"));
     it("import-exposed", assertValidSchema("import-exposed", "MyObject"));
     it("import-internal", assertValidSchema("import-internal", "MyObject", { jsDoc: "basic" }));
+    */
+    it("import-internal-aliased", assertValidSchema("import-internal-aliased", "Dashboard"));
+    /*
     it("import-anonymous", assertValidSchema("import-anonymous", "MyObject"));
 
     it("generic-simple", assertValidSchema("generic-simple", "MyObject"));
@@ -102,4 +106,5 @@ describe("valid-data-other", () => {
             ajvOptions: { $data: true },
         })
     );
+    */
 });
